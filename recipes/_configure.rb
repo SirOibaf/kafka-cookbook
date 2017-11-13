@@ -84,5 +84,14 @@ remote_file "#{node['kkafka']['install_dir']}/libs/hops-kafka-authorizer-#{node[
   action :create_if_missing
 end
 
+# Register Kafka as HopsWorks service
+bash 'set_kafka_as_enabled' do
+  user "root"
+  group "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh -e \"INSERT INTO hopsworks.variables values('kafka_enabled', '#{node['kkafka']['enabled']}')\"
+  EOH
+  not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT * FROM hopsworks.variables WHERE id='kafka_enabled'\" | grep kafka_enabled"
+end
 
 include_recipe node['kkafka']['start_coordination']['recipe']

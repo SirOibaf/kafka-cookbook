@@ -323,3 +323,5 @@ default['kkafka']['offset_monitor']['port']                               = "111
 
 
 default['kkafka']['systemd']                                           = "true"
+
+default['kkafka']['enabled'] = "true"
